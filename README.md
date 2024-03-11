@@ -1,51 +1,67 @@
-# zkSync Hardhat project template
+# Proof of Palooza - Whitepaper
 
-This project was scaffolded with [zksync-cli](https://github.com/matter-labs/zksync-cli).
+Drewapalooza is an annual event steeped in lore, tradition and culture. However we must recognize that the social fabric that binds us is at risk.
 
-## Project Layout
+As we enter middle age, we must acknowledge the factors that threaten to diminish the potency, vigor and virility that we bring to this cherished annual event. 
 
-- `/contracts`: Contains solidity smart contracts.
-- `/deploy`: Scripts for contract deployment and interaction.
-- `/test`: Test files.
-- `hardhat.config.ts`: Configuration settings.
+Fortunately blockchain technology has arrived just in time to preserve the original intent of Drewapalooza: To unite the gentlemen of [REDACTED] Ridge High School and their associates, if only for one weekend a year, to remind Drew that he is our b****.
 
-## How to Use
+Without further delay, I humbly submit to you my governance proposal for "Proof of Palooza", a decentralized autonomous organization dedicated to preserving the rich culture of Drewapalooza.
 
-- `npm run compile`: Compiles contracts.
-- `npm run deploy`: Deploys using script `/deploy/deploy.ts`.
-- `npm run interact`: Interacts with the deployed contract using `/deploy/interact.ts`.
-- `npm run test`: Tests the contracts.
+## The Threat
 
-Note: Both `npm run deploy` and `npm run interact` are set in the `package.json`. You can also run your files directly, for example: `npx hardhat deploy-zksync --script deploy.ts`
+As our responsibilities have broadened. Wedding anniversaries, childrens birthdays and deadlines set by the board of Fortune 500 companies are threats to the attendance of each Paloozateer.
 
-### Environment Settings
+We may find that fear of divorce, emancipation, or breach of employment contract act as disincentivizes to attend.
 
-To keep private keys safe, this project pulls in environment variables from `.env` files. Primarily, it fetches the wallet's private key.
+Additionally, we must recognize that as we age our feeble minds may forget how important Drewapalooza is to us. Our shared culture will weaken if we do not act now to preserve our distinct traditions.
 
-Rename `.env.example` to `.env` and fill in your private key:
+Already, important aspects of our oral history have been lost.
 
-```
-WALLET_PRIVATE_KEY=your_private_key_here...
-```
+Things such as:
 
-### Network Support
+- Who saved Ryan from drowning after all?
+- Which edition of Fast and the Furious are we supposed to watch this year?
+- Whose fault was it that Drew's barbeque combusted?
 
-`hardhat.config.ts` comes with a list of networks to deploy and test contracts. Add more by adjusting the `networks` section in the `hardhat.config.ts`. To make a network the default, set the `defaultNetwork` to its name. You can also override the default using the `--network` option, like: `hardhat test --network dockerizedNode`.
+## The Solution
 
-### Local Tests
+By launching DrewCoin ($DREW), we create a financial instrument which adequately rewards participants for their commitment to Drewapalooza.
 
-Running `npm run test` by default runs the [zkSync In-memory Node](https://era.zksync.io/docs/tools/testing/era-test-node.html) provided by the [@matterlabs/hardhat-zksync-node](https://era.zksync.io/docs/tools/hardhat/hardhat-zksync-node.html) tool.
+The initial supply of $DREW will be set at 1,000,000 units to be divided equally among all paloozateers (eligibilty criteria TBD).
 
-Important: zkSync In-memory Node currently supports only the L2 node. If contracts also need L1, use another testing environment like Dockerized Node. Refer to [test documentation](https://era.zksync.io/docs/tools/testing/) for details.
+Each year an additional issuance of $DREW will be set by the governance committee.
 
-## Useful Links
+At the close of each Drewapalooza the governance committee will be responsible for:
 
-- [Docs](https://era.zksync.io/docs/dev/)
-- [Official Site](https://zksync.io/)
-- [GitHub](https://github.com/matter-labs)
-- [Twitter](https://twitter.com/zksync)
-- [Discord](https://join.zksync.dev/)
+- Recording the official attendance
+- Selecting a slogan that captures the essence of that year's Palooza, (e.g. "The Year of the Barbecue Flambé", "The Year of the Gift Card Tip", or "The Year Mike Made out with a Knob").
 
-## License
+Paloozateers who are found to be in attendance will receive:
 
-This project is under the [MIT](./LICENSE) license.
+- An equal share of that year's issuance of $DREW.
+- An NFT "Proof of Palooza" that commemorates that year's slogan.
+
+
+## Governance Committee
+
+The composition of the governance committee is TBD. 
+
+Factors that will be taken into account when determining the governance committee include:
+
+- Palooza attendance record
+- Technical proficiency
+- How much you look like Drew
+
+The governance committee will comprise of any number of odd members > 1. All actions taken by the governance committee require a signature by a simple majority.
+
+## Utility
+
+$DREW can be spent freely by holders of the token and may be bartered in exchange for goods and services such as: 
+
+- Preferred access to the bunkie
+- Rides to/from the marina
+- Substances (Banned/Unbanned)
+- Non-violent retaliation to jokes about one's family members
+
+I submit to you this draft proposal for your consideration and comment.
