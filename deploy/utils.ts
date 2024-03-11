@@ -74,6 +74,31 @@ type DeployContractOptions = {
    */ 
   wallet?: Wallet
 }
+
+export const estimateDeploymentFee =  async (contractArtifactName: string, constructorArguments?: any[], options?: DeployContractOptions) => {
+  
+    const log = (message: string) => {
+      if (!options?.silent) console.log(message);
+    }
+    
+    log(`\nEstimating deployment fee for "${contractArtifactName}"...`);
+    
+    const wallet = options?.wallet ?? getWallet();
+    const deployer = new Deployer(hre, wallet);
+    const artifact = await deployer.loadArtifact(contractArtifactName).catch((error) => {
+      if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {
+        console.error(error.message);
+        throw `⛔️ Please make sure you have compiled your contracts or specified the correct contract name!`;
+      } else {
+        throw error;
+      }
+    });
+  
+    // Estimate contract deployment fee
+    const deploymentFee = await deployer.estimateDeployFee(artifact, constructorArguments || []);
+    log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`);
+
+}
 export const deployContract = async (contractArtifactName: string, constructorArguments?: any[], options?: DeployContractOptions) => {
   const log = (message: string) => {
     if (!options?.silent) console.log(message);

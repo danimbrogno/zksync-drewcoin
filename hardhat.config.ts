@@ -1,11 +1,12 @@
 import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-ledger";
 import "@matterlabs/hardhat-zksync-node";
 import "@matterlabs/hardhat-zksync-deploy";
 import "@matterlabs/hardhat-zksync-solc";
 import "@matterlabs/hardhat-zksync-verify";
+import "@matterlabs/hardhat-zksync-chai-matchers";
+import "@matterlabs/hardhat-zksync-toolbox";
 import "hardhat-gas-reporter";
-import "@nomicfoundation/hardhat-chai-matchers";
+import "hardhat-contract-sizer";
 
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
@@ -15,9 +16,6 @@ const config: HardhatUserConfig = {
       ethNetwork: "sepolia",
       zksync: true,
       verifyURL: "https://explorer.sepolia.era.zksync.dev/contract_verification",
-      ledgerAccounts: [
-        "0xa3c07d5d81c16F24E46077311cCBc6EeB4B1031C",
-      ],
     },
     
     zkSyncMainnet: {
@@ -25,9 +23,6 @@ const config: HardhatUserConfig = {
       ethNetwork: "mainnet",
       zksync: true,
       verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
-      // ledgerAccounts: [
-      //   "0xa3c07d5d81c16F24E46077311cCBc6EeB4B1031C",
-      // ],
     },
     zkSyncGoerliTestnet: { // deprecated network
       url: "https://testnet.era.zksync.dev",
@@ -63,12 +58,25 @@ const config: HardhatUserConfig = {
   },
   solidity: {
     version: "0.8.17",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000,
+      },
+    }
   },
   gasReporter: {
     enabled: true,
     currency: 'USD',
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
-    token: 'ETH'
+    token: 'ETH',
+  },
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
+    except: ["BootloaderUtilities"]
   }
 };
 

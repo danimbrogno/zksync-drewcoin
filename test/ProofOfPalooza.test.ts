@@ -29,7 +29,7 @@ const deploy = async (initialGeneration = 19, initialIssuance = 1000000000000000
 }
 
 describe('Proof Of Palooza', function () {
-  
+
   it("Should begin at generation 19 with supply of 1m", async function () {
     
     const { pop } = await deploy();

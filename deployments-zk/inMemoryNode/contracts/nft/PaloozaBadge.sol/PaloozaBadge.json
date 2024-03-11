@@ -761,6 +761,76 @@
       "factoryDeps": [],
       "address": "0x6d6973Bf5054ce17EB3001914281190B7db1DB07",
       "txHash": "0x09b84571a3657c345980e4af3e84ab7542a3bc81d31299268af1ffbafd03d3c1"
+    },
+    {
+      "constructorArgs": [
+        "Proof of Palooza",
+        "POP",
+        "The year of the barbeque flambé",
+        "20",
+        2
+      ],
+      "salt": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "deploymentType": "create",
+      "factoryDeps": [],
+      "address": "0xa5faAbf4A37b366e54965fe6abF65119443bb055",
+      "txHash": "0x9a64988eb2f1e7274d21b452dc2bb38aa7af8a9ebd5c5643a1910297cfd58a14"
+    },
+    {
+      "constructorArgs": [
+        "Proof of Palooza",
+        "POP",
+        "The year of the barbeque flambé",
+        "20",
+        2
+      ],
+      "salt": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "deploymentType": "create",
+      "factoryDeps": [],
+      "address": "0x1FBd605b767FA0Ca8130D977Ca7F3f7bf5a9397f",
+      "txHash": "0x4530dd38545d45274cde49799b9cde61d1941ae046fb61988ddfa954cea3e386"
+    },
+    {
+      "constructorArgs": [
+        "Proof of Palooza",
+        "POP",
+        "The year of the barbeque flambé",
+        "20",
+        2
+      ],
+      "salt": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "deploymentType": "create",
+      "factoryDeps": [],
+      "address": "0xaad5513675a8A962174842615eC87099ff8Ba3bf",
+      "txHash": "0x1411fb8550cec4c1de5801b0fa83958be972c97502d50279b9b33c4044c1ef72"
+    },
+    {
+      "constructorArgs": [
+        "Proof of Palooza",
+        "POP",
+        "The year of the barbeque flambé",
+        "20",
+        2
+      ],
+      "salt": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "deploymentType": "create",
+      "factoryDeps": [],
+      "address": "0x9d8d51f663DaE2a7d4B42bCa8ba1053047dEa3d7",
+      "txHash": "0x91eda1db47468c4d898959816bc6b4cb6df6ebac5c3478e9b9e2b3d90fa8df0f"
+    },
+    {
+      "constructorArgs": [
+        "Proof of Palooza",
+        "POP",
+        "The year of the barbeque flambé",
+        "20",
+        2
+      ],
+      "salt": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "deploymentType": "create",
+      "factoryDeps": [],
+      "address": "0x7f11E84D11daacE781d036AF7cf372Ae10692885",
+      "txHash": "0xc84fea3ee7f62421f926a55bc25fa6c3aae15416348235d35b1e510f6b1778c7"
     }
   ]
 }
