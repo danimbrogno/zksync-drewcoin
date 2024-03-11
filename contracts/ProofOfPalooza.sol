@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./erc20/DrewCoin.sol";
+import "./nft/PaloozaBadge.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract ProofOfPalooza is Ownable {
@@ -20,6 +21,7 @@ contract ProofOfPalooza is Ownable {
     mapping(uint256 => mapping(address => bool)) public attendance;
     mapping(uint256 => mapping(address => bool)) public rewards;
     mapping(uint256 => bool) public locked;
+    mapping(uint256 => address) public badges;
 
     DrewCoin public token;
 
@@ -74,6 +76,8 @@ contract ProofOfPalooza is Ownable {
         uint256 share = generationIssuance[_generation] / numAttendees[_generation];
 
         token.claim(msg.sender, share);
+        PaloozaBadge(badges[_generation]).mint(msg.sender);
+        
     }
 
     function markAttendance(uint256 _generation, address _paloozateer) public isAdmin {
@@ -85,11 +89,12 @@ contract ProofOfPalooza is Ownable {
 
     }
 
-    function closeGeneration() public isAdmin {
+    function closeGeneration(string memory description) public isAdmin {
         require(isGenerationOpen(generation), 'Generation is not open');
         locked[generation] = true;
         generationIssuance[generation] = issuance;
         token.mint(address(this), issuance);
+        badges[generation] = address(new PaloozaBadge('Proof of Palooza', description, 'POP', generation, paloozateerIndex));
         generation = generation + 1;
     }
     
