@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { getWallet, deployContract, LOCAL_RICH_WALLETS } from '../deploy/utils';
 import { Contract, Wallet } from 'zksync-ethers';
+import  "@nomicfoundation/hardhat-chai-matchers";
 
 const deploy = async (initialGeneration = 19, initialIssuance = 1000000000000000000000000n, badgeName = 'Proof of Palooza', badgeSymbol = 'POP') => {
   
@@ -56,11 +57,15 @@ describe('Proof Of Palooza', function () {
   it("Should allow marking attendance of paloozateer for current generation", async function() {
     
     const { pop } = await deploy();
+
     const tx = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
     
     await tx.wait();
     
+    await expect(tx).to.emit(pop, 'AttendanceMarked').withArgs(19n, LOCAL_RICH_WALLETS[1].address).and.to.emit(pop, 'PaloozateerAdded').withArgs(LOCAL_RICH_WALLETS[1].address);
     expect(await pop.paloozateers(0)).to.eq(LOCAL_RICH_WALLETS[1].address);
+
+
   });
   
   it("Should not allow marking attendance of paloozateer for next generation", async function() {
@@ -107,6 +112,7 @@ describe('Proof Of Palooza', function () {
     expect( numAttendees).to.eq(2n);
     
   });
+
   it("Should allow adding the same paloozateers in different generations", async function() {
     
     const { pop } = await deploy();
@@ -156,13 +162,17 @@ describe('Proof Of Palooza', function () {
     const tx1 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[2].address);
     await tx1.wait();
     
-    await pop.closeGeneration('Year of the impotent tennis ball');
+    const tx = await pop.closeGeneration('Year of the impotent tennis ball');
 
+    await tx.wait();
+    
     const isLocked = await pop.isGenerationLocked(19n);
     const generation = await pop.generation();
-
+    
+    expect(tx).to.emit(pop, 'GenerationClosed').withArgs(19n, 1000000000000000000000000n, 2n, 'Year of the impotent tennis ball');
     expect(isLocked).to.eq(true);
     expect(generation).to.eq(20n);
+
 
   });
   
