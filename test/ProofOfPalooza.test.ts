@@ -18,7 +18,12 @@ const deploy = async () => {
 
   const drewCoin = new Contract(drewCoinAddr, drewCoinArtifact.abi, wallet);
 
-  return { pop: contract, drewCoin, wallet };
+  const getNft = async (generation: BigInt) => {
+    const nftArtifact = await deployer.loadArtifact("PaloozaBadge");
+    return new Contract(await contract.badges(generation), nftArtifact.abi, wallet);
+  }
+
+  return { pop: contract, drewCoin, wallet, getNft };
 
 }
 
@@ -206,9 +211,9 @@ describe('Proof Of Palooza', function () {
 
   });
 
-  it('Should allow two attendees of the same generation to claim their reward', async function () {
+  it('Should allow two attendees of the same generation to claim', async function () {
 
-    const { pop, drewCoin, wallet } = await deploy();
+    const { pop, drewCoin, getNft } = await deploy();
 
     await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
     await pop.markAttendance(20, LOCAL_RICH_WALLETS[2].address);
@@ -221,18 +226,23 @@ describe('Proof Of Palooza', function () {
 
     expect(await drewCoin.balanceOf(popAddress)).to.eq(1000000000000000000000000n);
 
-    await (pop.connect(user1) as Contract).claim(20)
-    await (pop.connect(user2) as Contract).claim(20)
+    const nft = await getNft(20n);
 
+    await (pop.connect(user1) as Contract).claim(20n)
+    await (pop.connect(user2) as Contract).claim(20n)
+
+    expect(await nft.balanceOf(user1.address)).to.eq(1n);
     expect(await drewCoin.balanceOf(user1.address)).to.eq(500000000000000000000000n);
+    expect(await nft.balanceOf(user2.address)).to.eq(1n);
     expect(await drewCoin.balanceOf(user2.address)).to.eq(500000000000000000000000n);
+    expect(await nft.balanceOf(popAddress)).to.eq(0n);
     expect(await drewCoin.balanceOf(popAddress)).to.eq(0n);
 
   });
   
   it('Should allow 5 attendees over two generations to claim their correct reward amounts', async function () {
 
-    const { pop, drewCoin } = await deploy();
+    const { pop, drewCoin, getNft } = await deploy();
 
     await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
     await pop.markAttendance(20, LOCAL_RICH_WALLETS[2].address);
@@ -257,6 +267,9 @@ describe('Proof Of Palooza', function () {
 
     expect(await drewCoin.balanceOf(popAddress)).to.eq(3000000000000000000000000n);
     
+    const nft20 = await getNft(20n);
+    const nft21 = await getNft(21n);
+
     await (pop.connect(user1) as Contract).claim(20)
     await (pop.connect(user2) as Contract).claim(20)
     await (pop.connect(user1) as Contract).claim(21)
@@ -265,12 +278,18 @@ describe('Proof Of Palooza', function () {
     
 
     expect(await drewCoin.balanceOf(user1.address)).to.eq(oneHalf + oneThird);
+    expect(await nft20.balanceOf(user1.address)).to.eq(1n);
+    expect(await nft21.balanceOf(user1.address)).to.eq(1n);
     expect(await drewCoin.balanceOf(user2.address)).to.eq(oneHalf + oneThird);
+    expect(await nft20.balanceOf(user2.address)).to.eq(1n);
+    expect(await nft21.balanceOf(user2.address)).to.eq(1n);
     expect(await drewCoin.balanceOf(user3.address)).to.eq(oneThird);
+    expect(await nft20.balanceOf(user3.address)).to.eq(0n);
+    expect(await nft21.balanceOf(user3.address)).to.eq(1n);
 
   });
   
-  it('Non paloozateer should be unable to claim amount', async function () {
+  it('Non paloozateer should be unable to claim', async function () {
 
     const { pop } = await deploy();
 
@@ -279,7 +298,6 @@ describe('Proof Of Palooza', function () {
     await pop.closeGeneration('Year of the impotent tennis ball');
 
     const user2 = getWallet(LOCAL_RICH_WALLETS[2].privateKey);
-
     
     try {
       await (pop.connect(user2) as Contract).claim(20);
