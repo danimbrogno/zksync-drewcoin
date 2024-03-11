@@ -30,5 +30,9 @@
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
     "zksync-ethers": "^6.5.0"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-ledger": "^1.0.2",
+    "hardhat-gas-reporter": "^1.0.10"
   }
 }

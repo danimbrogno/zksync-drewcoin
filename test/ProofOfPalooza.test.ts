@@ -1,14 +1,14 @@
 import { expect } from 'chai';
 import { getWallet, deployContract, LOCAL_RICH_WALLETS } from '../deploy/utils';
-import { Contract, Wallet, ContractFactory } from 'zksync-ethers';
+import { Contract, Wallet } from 'zksync-ethers';
 
-const deploy = async () => {
+const deploy = async (initialGeneration = 19, initialIssuance = 1000000000000000000000000n) => {
   
   let wallet: Wallet;
   
   wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey);
   
-  const { deployer, contract } = await deployContract("ProofOfPalooza", [], { wallet, silent: true });
+  const { deployer, contract } = await deployContract("ProofOfPalooza", [initialGeneration, initialIssuance], { wallet, silent: true });
   
   await contract.waitForDeployment();
 
@@ -29,10 +29,19 @@ const deploy = async () => {
 
 describe('Proof Of Palooza', function () {
   
-  it("Should begin at generation 20", async function () {
+  it("Should begin at generation 19 with supply of 1m", async function () {
     
     const { pop } = await deploy();
-    expect(await pop.generation()).to.eq(20n);
+    expect(await pop.generation()).to.eq(19n);
+    expect( await pop.issuance()).to.eq(1000000000000000000000000n);
+    
+  });
+  
+  it("Should begin at generation 25 with supply of 5m", async function () {
+    
+    const { pop } = await deploy(25, 5000000000000000000000000n);
+    expect(await pop.generation()).to.eq(25n);
+    expect( await pop.issuance()).to.eq(5000000000000000000000000n);
     
   });
 
@@ -40,14 +49,14 @@ describe('Proof Of Palooza', function () {
 
     const { pop } = await deploy();
     await pop.closeGeneration('Year of the impotent tennis ball');
-    expect(await pop.generation()).to.eq(21n);
+    expect(await pop.generation()).to.eq(20n);
 
   });
   
   it("Should allow marking attendance of paloozateer for current generation", async function() {
     
     const { pop } = await deploy();
-    const tx = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+    const tx = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
     
     await tx.wait();
     
@@ -58,7 +67,7 @@ describe('Proof Of Palooza', function () {
     
     const { pop } = await deploy();
     try {
-      const tx = await pop.markAttendance(21, LOCAL_RICH_WALLETS[1].address);
+      const tx = await pop.markAttendance(20n, LOCAL_RICH_WALLETS[1].address);
       await tx.wait();
       expect.fail('Expected to revert');;
 
@@ -71,11 +80,11 @@ describe('Proof Of Palooza', function () {
   it("Should not allow marking paloozateer as present twice in the same generation", async function() {
     
     const { pop } = await deploy();
-    const tx0 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+    const tx0 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
     await tx0.wait();
     
     try {
-      const tx1 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+      const tx1 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
       await tx1.wait();
       expect.fail('Expected to revert');
     } catch (error) {
@@ -87,13 +96,13 @@ describe('Proof Of Palooza', function () {
   it("Should allow adding two different paloozateers in the same generation", async function() {
     
     const { pop } = await deploy();
-    const tx0 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+    const tx0 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
     await tx0.wait();
-    const tx1 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[2].address);
+    const tx1 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[2].address);
     await tx1.wait();
     
     const numPaloozateers = await pop.paloozateerIndex();
-    const numAttendees = await pop.numAttendees(20);
+    const numAttendees = await pop.numAttendees(19n);
     expect(numPaloozateers).to.eq(2n);
     expect( numAttendees).to.eq(2n);
     
@@ -101,18 +110,18 @@ describe('Proof Of Palooza', function () {
   it("Should allow adding the same paloozateers in different generations", async function() {
     
     const { pop } = await deploy();
-    const tx0 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+    const tx0 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
     await tx0.wait();
     const tx1 = await pop.closeGeneration('Year of the impotent tennis ball');
     await tx1.wait();
-    const tx2 = await pop.markAttendance(21, LOCAL_RICH_WALLETS[1].address);
+    const tx2 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
     await tx2.wait();
     
     const numPaloozateers = await pop.paloozateerIndex();
-    const numAttendees20 = await pop.numAttendees(20);
-    const numAttendees21 = await pop.numAttendees(20);
+    const numAttendees19 = await pop.numAttendees(19n);
+    const numAttendees20 = await pop.numAttendees(19n);
+    expect(numAttendees19).to.eq(1n);
     expect(numAttendees20).to.eq(1n);
-    expect(numAttendees21).to.eq(1n);
     expect(numPaloozateers).to.eq(1n);
     
   });
@@ -120,21 +129,21 @@ describe('Proof Of Palooza', function () {
   it("Should allow adding three paloozateers over 2 generations", async function() {
     
     const { pop } = await deploy();
-    const tx0 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+    const tx0 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
     await tx0.wait();
-    const tx1 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[2].address);
+    const tx1 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[2].address);
     await tx1.wait();
     const tx2 = await pop.closeGeneration('Year of the impotent tennis ball');
     await tx2.wait();
-    const tx3 = await pop.markAttendance(21, LOCAL_RICH_WALLETS[3].address);
+    const tx3 = await pop.markAttendance(20n, LOCAL_RICH_WALLETS[3].address);
     await tx3.wait();
 
     const numPaloozateers = await pop.paloozateerIndex();
-    const numAttendees20 = await pop.numAttendees(20);
-    const numAttendees21 = await pop.numAttendees(21);
+    const numAttendees19 = await pop.numAttendees(19n);
+    const numAttendees20 = await pop.numAttendees(20n);
 
-    expect(numAttendees20).to.eq(2n);
-    expect(numAttendees21).to.eq(1n);
+    expect(numAttendees19).to.eq(2n);
+    expect(numAttendees20).to.eq(1n);
     expect(numPaloozateers).to.eq(3n);
     
   });
@@ -142,18 +151,18 @@ describe('Proof Of Palooza', function () {
   it("Should allow closing a generation", async function() {
     
     const { pop } = await deploy();
-    const tx0 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+    const tx0 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
     await tx0.wait();
-    const tx1 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[2].address);
+    const tx1 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[2].address);
     await tx1.wait();
     
     await pop.closeGeneration('Year of the impotent tennis ball');
 
-    const isLocked = await pop.isGenerationLocked(20);
+    const isLocked = await pop.isGenerationLocked(19n);
     const generation = await pop.generation();
 
     expect(isLocked).to.eq(true);
-    expect(generation).to.eq(21n);
+    expect(generation).to.eq(20n);
 
   });
   
@@ -162,13 +171,13 @@ describe('Proof Of Palooza', function () {
     
     const { pop } = await deploy();
     
-    const tx1 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+    const tx1 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
 
-    const tx2 = await pop.markAttendance(20, LOCAL_RICH_WALLETS[2].address);
+    const tx2 = await pop.markAttendance(19n, LOCAL_RICH_WALLETS[2].address);
     
-    expect( await pop.wasPresent(20, LOCAL_RICH_WALLETS[1].address)).to.eq(true);
+    expect( await pop.wasPresent(19n, LOCAL_RICH_WALLETS[1].address)).to.eq(true);
 
-    expect( await pop.wasPresent(20, LOCAL_RICH_WALLETS[2].address)).to.eq(true);
+    expect( await pop.wasPresent(19n, LOCAL_RICH_WALLETS[2].address)).to.eq(true);
     
   });
   
@@ -176,7 +185,7 @@ describe('Proof Of Palooza', function () {
 
     const { pop } = await deploy();
     try {
-      const tx = await pop.markAttendance(21, LOCAL_RICH_WALLETS[1].address);
+      const tx = await pop.markAttendance(20n, LOCAL_RICH_WALLETS[1].address);
       await tx.wait();
       expect.fail('Expected to revert');
     } catch (error) {
@@ -215,8 +224,8 @@ describe('Proof Of Palooza', function () {
 
     const { pop, drewCoin, getNft } = await deploy();
 
-    await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
-    await pop.markAttendance(20, LOCAL_RICH_WALLETS[2].address);
+    await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
+    await pop.markAttendance(19n, LOCAL_RICH_WALLETS[2].address);
 
     await pop.closeGeneration('Year of the impotent tennis ball');
 
@@ -226,10 +235,10 @@ describe('Proof Of Palooza', function () {
 
     expect(await drewCoin.balanceOf(popAddress)).to.eq(1000000000000000000000000n);
 
-    const nft = await getNft(20n);
+    const nft = await getNft(19n);
 
-    await (pop.connect(user1) as Contract).claim(20n)
-    await (pop.connect(user2) as Contract).claim(20n)
+    await (pop.connect(user1) as Contract).claim(19n)
+    await (pop.connect(user2) as Contract).claim(19n)
 
     expect(await nft.balanceOf(user1.address)).to.eq(1n);
     expect(await drewCoin.balanceOf(user1.address)).to.eq(500000000000000000000000n);
@@ -244,8 +253,8 @@ describe('Proof Of Palooza', function () {
 
     const { pop, drewCoin, getNft } = await deploy();
 
-    await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
-    await pop.markAttendance(20, LOCAL_RICH_WALLETS[2].address);
+    await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
+    await pop.markAttendance(19n, LOCAL_RICH_WALLETS[2].address);
     
     await pop.closeGeneration('Year of the impotent tennis ball');
     
@@ -254,9 +263,9 @@ describe('Proof Of Palooza', function () {
     const oneThird = 2000000000000000000000000n / 3n;
 
     await pop.setIssuance(2000000000000000000000000n);
-    await pop.markAttendance(21, LOCAL_RICH_WALLETS[1].address);
-    await pop.markAttendance(21, LOCAL_RICH_WALLETS[2].address);
-    await pop.markAttendance(21, LOCAL_RICH_WALLETS[3].address);
+    await pop.markAttendance(20n, LOCAL_RICH_WALLETS[2].address);
+    await pop.markAttendance(20n, LOCAL_RICH_WALLETS[3].address);
+    await pop.markAttendance(20n, LOCAL_RICH_WALLETS[1].address);
     
     await pop.closeGeneration('Year of the impotent tennis ball');
 
@@ -267,25 +276,25 @@ describe('Proof Of Palooza', function () {
 
     expect(await drewCoin.balanceOf(popAddress)).to.eq(3000000000000000000000000n);
     
+    const nft19 = await getNft(19n);
     const nft20 = await getNft(20n);
-    const nft21 = await getNft(21n);
 
-    await (pop.connect(user1) as Contract).claim(20)
-    await (pop.connect(user2) as Contract).claim(20)
-    await (pop.connect(user1) as Contract).claim(21)
-    await (pop.connect(user2) as Contract).claim(21)
-    await (pop.connect(user3) as Contract).claim(21)
+    await (pop.connect(user1) as Contract).claim(19n)
+    await (pop.connect(user2) as Contract).claim(19n)
+    await (pop.connect(user1) as Contract).claim(20n)
+    await (pop.connect(user2) as Contract).claim(20n)
+    await (pop.connect(user3) as Contract).claim(20n)
     
 
     expect(await drewCoin.balanceOf(user1.address)).to.eq(oneHalf + oneThird);
+    expect(await nft19.balanceOf(user1.address)).to.eq(1n);
     expect(await nft20.balanceOf(user1.address)).to.eq(1n);
-    expect(await nft21.balanceOf(user1.address)).to.eq(1n);
     expect(await drewCoin.balanceOf(user2.address)).to.eq(oneHalf + oneThird);
+    expect(await nft19.balanceOf(user2.address)).to.eq(1n);
     expect(await nft20.balanceOf(user2.address)).to.eq(1n);
-    expect(await nft21.balanceOf(user2.address)).to.eq(1n);
     expect(await drewCoin.balanceOf(user3.address)).to.eq(oneThird);
-    expect(await nft20.balanceOf(user3.address)).to.eq(0n);
-    expect(await nft21.balanceOf(user3.address)).to.eq(1n);
+    expect(await nft19.balanceOf(user3.address)).to.eq(0n);
+    expect(await nft20.balanceOf(user3.address)).to.eq(1n);
 
   });
   
@@ -293,14 +302,14 @@ describe('Proof Of Palooza', function () {
 
     const { pop } = await deploy();
 
-    await pop.markAttendance(20, LOCAL_RICH_WALLETS[1].address);
+    await pop.markAttendance(19n, LOCAL_RICH_WALLETS[1].address);
     
     await pop.closeGeneration('Year of the impotent tennis ball');
 
     const user2 = getWallet(LOCAL_RICH_WALLETS[2].privateKey);
     
     try {
-      await (pop.connect(user2) as Contract).claim(20);
+      await (pop.connect(user2) as Contract).claim(19n);
       expect.fail('Expected to revert');
     } catch (error) {
       expect(error.message).to.include('Paloozateer was not present for this generation');

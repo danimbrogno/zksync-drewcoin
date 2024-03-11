@@ -6,12 +6,11 @@ import "./nft/PaloozaBadge.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract ProofOfPalooza is Ownable {
-    uint256 constant INITIAL_GENERATION = 20;
-    uint256 constant INITIAL_SUPPLY = 1_000_000 * (10 ** 18);
+    
     address private admin = address(0);
     uint256 public generation;
     uint256 public paloozateerIndex = 0;
-    uint256 public issuance = INITIAL_SUPPLY;
+    uint256 public issuance = 0;
     
     mapping(uint256 => address) public paloozateers;
     mapping(address => bool) public paloozateerExists;
@@ -30,8 +29,9 @@ contract ProofOfPalooza is Ownable {
         _;
     }
 
-    constructor() {
-        generation = INITIAL_GENERATION;
+    constructor(uint256 _initialGeneration, uint256 _initialIssuance) {
+        generation = _initialGeneration;
+        issuance = _initialIssuance;
         admin = msg.sender;
         token = new DrewCoin(0);
         token.transferOwnership(address(this));

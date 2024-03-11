@@ -114,3 +114,4 @@ dist
 
 era_test_node.log
 deployments-zk/zkSyncTestnet
+gas-report.txt
