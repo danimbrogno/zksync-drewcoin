@@ -1,10 +1,9 @@
 import { deployContract } from "./utils";
 
-// An example of a basic deploy script
-// It will deploy a Greeter contract to selected network
-// as well as verify it on Block Explorer if possible for the network
+(BigInt.prototype as any).toJSON = function() { return this.toString() }
+
 export default async function () {
-  const contractArtifactName = "Greeter";
-  const constructorArguments = ["Hi there!"];
+  const contractArtifactName = "ProofOfPalooza";
+  const constructorArguments = [19, 1000000000000000000000000n, 'Proof of Palooza', 'POP'];
   await deployContract(contractArtifactName, constructorArguments);
 }

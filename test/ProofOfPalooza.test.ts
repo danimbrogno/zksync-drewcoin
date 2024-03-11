@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import { getWallet, deployContract, LOCAL_RICH_WALLETS } from '../deploy/utils';
 import { Contract, Wallet } from 'zksync-ethers';
 
-const deploy = async (initialGeneration = 19, initialIssuance = 1000000000000000000000000n) => {
+const deploy = async (initialGeneration = 19, initialIssuance = 1000000000000000000000000n, badgeName = 'Proof of Palooza', badgeSymbol = 'POP') => {
   
   let wallet: Wallet;
   
   wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey);
   
-  const { deployer, contract } = await deployContract("ProofOfPalooza", [initialGeneration, initialIssuance], { wallet, silent: true });
+  const { deployer, contract } = await deployContract("ProofOfPalooza", [initialGeneration, initialIssuance, badgeName, badgeSymbol], { wallet, silent: true });
   
   await contract.waitForDeployment();
 

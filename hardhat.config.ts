@@ -7,7 +7,7 @@ import "@matterlabs/hardhat-zksync-verify";
 import "hardhat-gas-reporter";
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "zkSyncTestnet",
+  defaultNetwork: "inMemoryNode",
   networks: {
     zkSyncSepoliaTestnet: {
       url: "https://sepolia.era.zksync.dev",
@@ -24,9 +24,9 @@ const config: HardhatUserConfig = {
       ethNetwork: "mainnet",
       zksync: true,
       verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
-      ledgerAccounts: [
-        "0xa3c07d5d81c16F24E46077311cCBc6EeB4B1031C",
-      ],
+      // ledgerAccounts: [
+      //   "0xa3c07d5d81c16F24E46077311cCBc6EeB4B1031C",
+      // ],
     },
     zkSyncGoerliTestnet: { // deprecated network
       url: "https://testnet.era.zksync.dev",

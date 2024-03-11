@@ -8,9 +8,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract ProofOfPalooza is Ownable {
     
     address private admin = address(0);
-    uint256 public generation;
     uint256 public paloozateerIndex = 0;
+    uint256 public generation = 0;
     uint256 public issuance = 0;
+    string public badgeName = "";
+    string public badgeSymbol = "";
     
     mapping(uint256 => address) public paloozateers;
     mapping(address => bool) public paloozateerExists;
@@ -24,14 +26,20 @@ contract ProofOfPalooza is Ownable {
 
     DrewCoin public token;
 
+    event AttendanceMarked(uint256 generation, address paloozateer);
+    event GenerationClosed(uint256 generation, uint256 issuance, uint256 numAttendees, string description);
+    event PaloozateerAdded(address paloozateer);
+
     modifier isAdmin() {
         require(msg.sender == admin, 'Not admin');
         _;
     }
 
-    constructor(uint256 _initialGeneration, uint256 _initialIssuance) {
+    constructor(uint256 _initialGeneration, uint256 _initialIssuance, string memory _badgeName, string memory _badgeSymbol) {
         generation = _initialGeneration;
         issuance = _initialIssuance;
+        badgeName = _badgeName;
+        badgeSymbol = _badgeSymbol;
         admin = msg.sender;
         token = new DrewCoin(0);
         token.transferOwnership(address(this));
@@ -64,6 +72,7 @@ contract ProofOfPalooza is Ownable {
             paloozateers[paloozateerIndex] = _paloozateer;
             paloozateerExists[_paloozateer] = true;
             paloozateerIndex = paloozateerIndex + 1;
+            emit PaloozateerAdded(_paloozateer);
         }
     }
 
@@ -86,6 +95,7 @@ contract ProofOfPalooza is Ownable {
         addPaloozateer(_paloozateer);
         attendance[_generation][_paloozateer] = true;
         numAttendees[_generation] = numAttendees[_generation] + 1;
+        emit AttendanceMarked(_generation, _paloozateer);
 
     }
 
@@ -94,7 +104,8 @@ contract ProofOfPalooza is Ownable {
         locked[generation] = true;
         generationIssuance[generation] = issuance;
         token.mint(address(this), issuance);
-        badges[generation] = address(new PaloozaBadge('Proof of Palooza', description, 'POP', generation, paloozateerIndex));
+        badges[generation] = address(new PaloozaBadge(badgeName, description, badgeSymbol, generation, paloozateerIndex));
+        emit GenerationClosed(generation, issuance, numAttendees[generation], description);
         generation = generation + 1;
     }
     

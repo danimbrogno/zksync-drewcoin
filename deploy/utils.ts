@@ -2,8 +2,7 @@ import { Provider, Wallet } from "zksync-ethers";
 import * as hre from "hardhat";
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy";
 import dotenv from "dotenv";
-import { ethers, NonceManager } from "ethers";
-
+import { ethers } from "ethers";
 import "@matterlabs/hardhat-zksync-node/dist/type-extensions";
 import "@matterlabs/hardhat-zksync-verify/dist/src/type-extensions";
 
@@ -16,7 +15,9 @@ export const getProvider = () => {
   if (!rpcUrl) throw `⛔️ RPC URL wasn't found in "${hre.network.name}"! Please add a "url" field to the network config in hardhat.config.ts`;
   
   // Initialize zkSync Provider
-  const provider = new Provider(rpcUrl);
+  let provider: Provider;
+  
+  provider = new Provider(rpcUrl);
 
   return provider;
 }
@@ -32,6 +33,7 @@ export const getWallet = (privateKey?: string) => {
   // Initialize zkSync Wallet
   const wallet = new Wallet(privateKey ?? process.env.WALLET_PRIVATE_KEY!, provider);
 
+  // const wallet = new Wallet(provider.)
   return wallet;
 }
 
@@ -76,7 +78,7 @@ export const deployContract = async (contractArtifactName: string, constructorAr
   const log = (message: string) => {
     if (!options?.silent) console.log(message);
   }
-
+  
   log(`\nStarting deployment process of "${contractArtifactName}"...`);
   
   const wallet = options?.wallet ?? getWallet();
