@@ -67,6 +67,7 @@ I submit to you this draft proposal for your consideration and comment.
 
 ## Contract Addresses
 
-|Network|Address|
-|--|--|
-|zkSync| 0x635A80f0E8a1c22428D6cAb257E19e6227190664|
+|Network|Contract|Address|
+|--|--|--|
+| zkSync | ProofOfPalooza.sol | 0x635A80f0E8a1c22428D6cAb257E19e6227190664|
+| zkSync | DrewCoin.sol | 0x7f68917FFb2DA0621cF5B20B454fa76E92a7abE8 |
