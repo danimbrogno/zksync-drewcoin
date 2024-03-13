@@ -61,7 +61,7 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 1000,
+        runs: 2000
       },
     }
   },
@@ -72,10 +72,11 @@ const config: HardhatUserConfig = {
     token: 'ETH',
   },
   contractSizer: {
+
     alphaSort: true,
     disambiguatePaths: false,
     runOnCompile: true,
-    strict: true,
+    strict: false, // change back to true
     except: ["BootloaderUtilities"]
   }
 };

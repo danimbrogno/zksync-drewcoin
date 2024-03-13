@@ -4,7 +4,7 @@ Drewapalooza is an annual event steeped in lore, tradition and culture. However 
 
 As we enter middle age, we must acknowledge the factors that threaten to diminish the potency, vigor and virility that we bring to this cherished annual event. 
 
-Fortunately blockchain technology has arrived just in time to preserve the original intent of Drewapalooza: To unite the gentlemen of [REDACTED] Ridge High School and their associates, if only for one weekend a year, to remind Drew that he is our b****.
+Fortunately blockchain technology has arrived just in time to preserve the original intent of Drewapalooza: To unite the gentlemen of [REDACTED] Ridge High School and their associates, if only for one weekend a year.
 
 Without further delay, I humbly submit to you my governance proposal for "Proof of Palooza", a decentralized autonomous organization dedicated to preserving the rich culture of Drewapalooza.
 
@@ -47,13 +47,13 @@ Paloozateers who are found to be in attendance will receive:
 
 The composition of the governance committee is TBD. 
 
-Factors that will be taken into account when determining the governance committee include:
+Eligibility criteria for the governance committee include:
 
 - Palooza attendance record
 - Technical proficiency
-- How much you look like Drew
+- Not being named Drew
 
-The governance committee will comprise of any number of odd members > 1. All actions taken by the governance committee require a signature by a simple majority.
+The governance committee will comprise any number of odd members > 1. All actions taken by the governance committee require a signature by a simple majority.
 
 ## Utility
 
@@ -61,7 +61,12 @@ $DREW can be spent freely by holders of the token and may be bartered in exchang
 
 - Preferred access to the bunkie
 - Rides to/from the marina
-- Substances (Banned/Unbanned)
 - Non-violent retaliation to jokes about one's family members
 
 I submit to you this draft proposal for your consideration and comment.
+
+## Contract Addresses
+
+|Network|Address|
+|--|--|
+|zkSync| 0x635A80f0E8a1c22428D6cAb257E19e6227190664|
